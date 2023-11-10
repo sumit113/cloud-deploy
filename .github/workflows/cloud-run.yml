@@ -3,7 +3,6 @@ name: nextjs-cloud-run
 on:
   push:
     branches:
-      - master
       - main
 
 env:
