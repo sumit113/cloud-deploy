@@ -32,16 +32,20 @@ jobs:
       - name: Authorize Docker push
         run: gcloud auth configure-docker
 
-      - name: Build and tag the docker image
-        run: |-
-          docker build . --tag us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA
+      - name: build and push the docker image
+        env:
+          PROJECT_ID: ${{ secrets.CLOUD_RUN_PROJECT_NAME }}
+        run: |
+          gcloud auth configure-docker us-east1-docker.pkg.dev
+          docker build -t us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA .
+          docker push us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA
 
-      - name: Push Docker Image to Artifact Registry
-        run: |-
-          docker tag $REPO_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA
-          docker tag $IMAGE_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA
-          docker push us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHHUB_SHA
-          docker push us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA   
+      # - name: Push Docker Image to Artifact Registry
+      #   run: |-
+      #     docker tag $REPO_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA
+      #     docker tag $IMAGE_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA
+      #     docker push us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHHUB_SHA
+      #     docker push us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA   
 
       - name: Deploy
         run: |-
