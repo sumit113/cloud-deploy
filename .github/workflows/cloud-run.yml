@@ -40,8 +40,8 @@ jobs:
 
       - name: Push Docker Image to Artifact Registry
         run: |-
-          docker tag $REPO_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:latest
-          docker push us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:latest   
+          docker tag $REPO_NAME:latest us-east1-docker.pkg.dev/tidal-guild-377418/nextjs-cloud-run/$REPO_NAME:latest
+          docker push us-east1-docker.pkg.dev/tidal-guild-377418/nextjs-cloud-run/$REPO_NAME:latest
 
       - name: Deploy
         run: |-
