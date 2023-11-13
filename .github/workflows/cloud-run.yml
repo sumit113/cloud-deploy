@@ -34,16 +34,23 @@ jobs:
 
       - name: Build and tag the docker image
         run: |-
-          docker build . --tag us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:$GITHUB_SHA
+          docker build . --tag us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA
 
       - name: Push the image to the Google Artifact Registry (GAR)
         run: |-
-          docker push us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:$GITHUB_SHA
+          docker push us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA
+
+      - name: Push Docker Image to Artifact Registry
+        run: |-
+          docker tag $REPO_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:latest
+          docker tag $IMAGE_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA
+          docker push us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:latest
+          docker push us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA   
 
       - name: Deploy
         run: |-
           gcloud run deploy $REPO_NAME \
           --region $REGION \
-          --image us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:$GITHUB_SHA \
+          --image us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA \
           --platform "managed" \
           --quiet
