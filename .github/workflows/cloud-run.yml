@@ -35,18 +35,18 @@ jobs:
       - name: build and push the docker image
         run: |
           gcloud auth configure-docker us-east1-docker.pkg.dev
-          docker build -t us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME .
+          docker build -t $REPO_NAME:latest .
 #          docker push us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME
 
       - name: Push Docker Image to Artifact Registry
         run: |-
-          docker tag $REPO_NAME: us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME
-          docker push us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME   
+          docker tag $REPO_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME
+          docker push us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:latest   
 
       - name: Deploy
         run: |-
           gcloud run deploy $REPO_NAME \
           --region $REGION \
-          --image us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME \
+          --image us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:latest \
           --platform "managed" \
           --quiet
