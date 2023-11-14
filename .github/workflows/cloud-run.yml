@@ -39,7 +39,11 @@ jobs:
 
       - name: Authenticate Docker
         run: |  
+<<<<<<< HEAD
           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
+=======
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev   
+>>>>>>> 2dec7cdf1933c766c9c32f47ef24a3f7f5a46d16
 
       - name: Push Docker Image to Artifact Registry
         run: |-
