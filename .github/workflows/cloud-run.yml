@@ -3,7 +3,7 @@ name: Cloud-Deploy-Action
 on:
   push:
     branches:
-      - release
+      - main
 
 env:
   PROJECT_ID: tidal-guild-377418
