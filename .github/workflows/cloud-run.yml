@@ -36,7 +36,6 @@ jobs:
         run: |
           gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
           docker build -t us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:latest .
-#          docker push us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME
 
       - name: Push Docker Image to Artifact Registry
         run: |-
