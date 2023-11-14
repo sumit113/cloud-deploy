@@ -6,7 +6,7 @@ on:
       - release
 
 env:
-  PROJECT_ID: ${{ secrets.CLOUD_RUN_PROJECT_NAME }}
+  PROJECT_ID: tidal-guild-377418
   REGION: us-east1
   # project-name but it can be anything you want
   REPO_NAME: nextjs-cloud-run
