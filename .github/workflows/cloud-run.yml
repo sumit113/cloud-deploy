@@ -28,7 +28,7 @@ jobs:
       # Setup gcloud CLI/SDK
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
-             
+
       - name: Authenticate and Build 
         run: |-
           gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
@@ -47,6 +47,6 @@ jobs:
         run: |-
           gcloud run deploy $REPO_NAME \
           --region $REGION \
-          --image us-east1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME:latest \
+          --image us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:latest \
           --platform "managed" \
           --quiet
