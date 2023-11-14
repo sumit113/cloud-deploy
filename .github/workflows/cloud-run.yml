@@ -28,22 +28,15 @@ jobs:
       # Setup gcloud CLI/SDK
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
-
-      - name: Authorize Docker push
-        run: gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
              
       - name: Authenticate and Build 
-        run: |
+        run: |-
           gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
           docker build -t us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:latest .
 
       - name: Authenticate Docker
-        run: |  
-<<<<<<< HEAD
+        run: |-
           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
-=======
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev   
->>>>>>> 2dec7cdf1933c766c9c32f47ef24a3f7f5a46d16
 
       - name: Push Docker Image to Artifact Registry
         run: |-
