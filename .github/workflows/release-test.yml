@@ -1,4 +1,4 @@
-name: nextjs-cloud-run
+name: Cloud-Deploy-Action
 
 on:
   push:
@@ -7,9 +7,11 @@ on:
 
 env:
   PROJECT_ID: tidal-guild-377418
-  REGION: us-east1
+  REGION: us-central1
   # project-name but it can be anything you want
-  REPO_NAME: nextjs-cloud-run
+  IMAGE_NAME: test-deploy
+  REPO_NAME: cloud-deploy
+  SERVICE_NAME: test-deploy
 
 jobs:
   build-and-deploy:
@@ -31,19 +33,22 @@ jobs:
 
       - name: Authenticate and Build 
         run: |-
-          gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
-          docker build --build-arg VERSION=$(node -p "require('./package.json').version") -t us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:latest .
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
+          docker build --build-arg VERSION=$(node -p "require('./package.json').version") -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest .
+
       - name: Authenticate Docker
         run: |-
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
-      - name: Push Docker Image to Artifact Registry
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
+
+      - name: Tagging and Pushing Docker Image to Artifact Registry
         run: |-
-          docker tag us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:$(node -p "require('./package.json').version")
-          docker push us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:$(node -p "require('./package.json').version")
+          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./package.json').version")
+          docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./package.json').version")
+
       - name: Deploy
         run: |-
-          gcloud run deploy $REPO_NAME \
+          gcloud run deploy $SERVICE_NAME \
           --region $REGION \
-          --image us-east1-docker.pkg.dev/$PROJECT_ID/nextjs-cloud-run/$REPO_NAME:latest \
+          --image us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./package.json').version") \
           --platform "managed" \
           --quiet
