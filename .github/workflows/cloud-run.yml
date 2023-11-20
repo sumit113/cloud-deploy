@@ -1,29 +1,32 @@
-name: Deploy Nginx
+## some actions
+name: package version update
 
 on:
   push:
     branches:
-    - 'main'
+      - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-
-    - name: code checkout
+    - name: Check out code
       uses: actions/checkout@v2
 
-    - name: install the gcloud cli
-      uses: google-github-actions/setup-gcloud@v0
-      with:
-        project_id: ${{ secrets.CLOUD_RUN_PROJECT_NAME }}
-        service_account_key: ${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT }}
-        export_default_credentials: true
-
-    - name: build and push the docker image
+    - name: 'Automated Version Bump'
+      uses: 'qubetools/qubetools-gh-action-semantic-version-tag-bump@v1.0.0'
+      id: version-bump
       env:
-        GOOGLE_PROJECT: ${{ secrets.CLOUD_RUN_PROJECT_NAME }}
-      run: |
-        gcloud auth configure-docker us-central1-docker.pkg.dev
-        docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT/demo/nginx:latest .
-        docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT/demo/nginx:latest
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        major-wording: 'major,Major,breaking,Breaking'
+        minor-wording: 'minor,Minor,new,New,feat,Feat,feature,Feature,release,Release'
+        patch-wording: 'fix,Fix,fixes,Fixes,patch,Patch'
+        rc-wording: 'rc,pre'
+        hours-to-go-back: 24
+        skip-if-no-commits: 'true'
+        tag-prefix: 'v'
+        commit-message: 'CI: bumps version to {{version}} [skip ci]'
+        bump-policy: 'last-commit'
