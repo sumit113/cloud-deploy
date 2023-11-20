@@ -74,4 +74,3 @@ jobs:
           tag-prefix: 'v'
           commit-message: 'CI: bumps version to {{version}} [skip ci]'
           bump-policy: 'last-commit'
-          if: github.ref == 'refs/heads/main' && matrix.environment == 'prod'
