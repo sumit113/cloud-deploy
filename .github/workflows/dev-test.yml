@@ -34,7 +34,7 @@ jobs:
       - name: Authenticate and Build 
         run: |-
           gcloud auth configure-docker us-docker.pkg.dev --quiet
-          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest -f /.docker/app/
+          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest .
 
       # - name: Authenticate Docker
       #   run: |-
