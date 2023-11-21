@@ -45,10 +45,10 @@ jobs:
           docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./services/app/package.json').version")
           docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./services/app/package.json').version")
 
-      # - name: Deploy
-      #   run: |-
-      #     gcloud run deploy $SERVICE_NAME \
-      #     --region $REGION \
-      #     --image us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./package.json').version") \
-      #     --platform "managed" \
-      #     --quiet
+      - name: Deploy
+        run: |-
+          gcloud run deploy $SERVICE_NAME \
+          --region $REGION \
+          --image us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./services/app/package.json').version") \
+          --platform "managed" \
+          --quiet
