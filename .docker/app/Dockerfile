@@ -9,13 +9,14 @@ COPY . .
 
 # Create and change to the app directory.
 
-WORKDIR services/app/
+WORKDIR /services/app/
 
 
 # Install production dependencies..
 # If you add a package-lock.json, speed your build by switching to 'npm ci'.
-RUN npm ci
+RUN cd /services/app/
 
+RUN npm install
 RUN npm run build
 
 CMD ["npm", "start"]
