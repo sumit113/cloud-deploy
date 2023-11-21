@@ -2,7 +2,7 @@
 FROM node:16.15.1-slim
 
 # Create and change to the app directory.
-WORKDIR /services/server
+WORKDIR /services/app
 
 # Copy application dependency manifests to the container image.
 # A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
