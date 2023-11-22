@@ -17,10 +17,10 @@ jobs:
   build-app1:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout app1 code
+      - name: Checkout app code
         uses: actions/checkout@v3
         with:
-          path: ./services/app
+          path: /services/app
 
       # Authenticate with Google Cloud
       - id: "auth"
