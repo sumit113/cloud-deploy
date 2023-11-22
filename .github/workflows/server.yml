@@ -9,7 +9,8 @@ env:
   PROJECT_ID: tidal-guild-377418
   REGION: us-central1
   # project-name but it can be anything you want
-  IMAGE_NAME: test-deploy
+  IMAGE_NAME_APP: test-deploy
+  IMAGE_NAME_SERVER: test-deploy-server
   REPO_NAME: cloud-deploy
   SERVICE_NAME: test-deploy
 
@@ -31,10 +32,19 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
 
-      - name: Authenticate and Build 
+      - name: Configure docker for GCP
         run: |-
           gcloud auth configure-docker us-docker.pkg.dev --quiet
-          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest -f ./.docker/server/Dockerfile .
+
+      - name: Build App
+        run: |-
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
+          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
+
+      - name: Build Server
+        run: |-
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
+          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest -f ./.docker/server/Dockerfile .
 
       - name: Authenticate Docker
         run: |-
