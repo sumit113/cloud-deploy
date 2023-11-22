@@ -20,7 +20,7 @@ jobs:
       - name: Checkout app1 code
         uses: actions/checkout@v3
         with:
-          path: ./services/app
+          path: /services/app
 
       # Authenticate with Google Cloud
       - id: "auth"
@@ -31,34 +31,34 @@ jobs:
       # Setup gcloud CLI/SDK
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
-      - name: Build app1 Docker image
+      - name: Build app Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ./services/app
-          file: ./.docker/app/Dockerfile
+          context: /services/app
+          file: /.docker/app/Dockerfile
           push: false
           tags: app:latest
-  build-app2:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout app2 code
-        uses: actions/checkout@v2
-        with:
-          path: ./services/server
-      # Authenticate with Google Cloud
-      - id: "auth"
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT }}"
+  # build-app2:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout app2 code
+  #       uses: actions/checkout@v2
+  #       with:
+  #         path: ./services/server
+  #     # Authenticate with Google Cloud
+  #     - id: "auth"
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT }}"
 
-      # Setup gcloud CLI/SDK
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+  #     # Setup gcloud CLI/SDK
+  #     - name: Set up Cloud SDK
+  #       uses: google-github-actions/setup-gcloud@v0
 
-      - name: Build app2 Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ./services/server
-          file: ./.docker/server/Dockerfile
-          push: false
-          tags: server:latest
+  #     - name: Build app2 Docker image
+  #       uses: docker/build-push-action@v2
+  #       with:
+  #         context: ./services/server
+  #         file: ./.docker/server/Dockerfile
+  #         push: false
+  #         tags: server:latest
