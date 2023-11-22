@@ -9,7 +9,7 @@ COPY . .
 
 # Create and change to the app directory.
 
-WORKDIR services/server/
+WORKDIR /services/server/
 
 
 # Install production dependencies..

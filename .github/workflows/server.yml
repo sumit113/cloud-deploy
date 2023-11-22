@@ -3,7 +3,7 @@ name: Cloud-serverDeploy-Action
 on:
   push:
     branches:
-      - test
+      - testrepo
 
 env:
   PROJECT_ID: tidal-guild-377418
@@ -38,12 +38,10 @@ jobs:
 
       - name: Build App
         run: |-
-          gcloud auth configure-docker us-docker.pkg.dev --quiet
           docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
 
       - name: Build Server
         run: |-
-          gcloud auth configure-docker us-docker.pkg.dev --quiet
           docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest -f ./.docker/server/Dockerfile .
 
       - name: Authenticate Docker
