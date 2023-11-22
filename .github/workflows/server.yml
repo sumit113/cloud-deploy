@@ -13,8 +13,8 @@ env:
   IMAGE_NAME_SERVER: test-deploy-server
   REPO_NAME: cloud-deploy
   SERVICE_NAME: test-deploy
-  APP_VERSION: $(node "require('./services/app/package.json').version")
-  SERVER_VERSION: $(node "require('./services/server/package.json').version")
+  APP_VERSION: $(node -p "require('./services/app/package.json').version")
+  SERVER_VERSION: $(node -p "require('./services/server/package.json').version")
 
 jobs:
   build-and-deploy:
