@@ -48,7 +48,9 @@ jobs:
           
       - name: Tagging app/server Docker Image
         run: |-
-          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$APP_VERSION                  
+          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$(node -p "require('./services/app/package.json').version")
+          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$(node -p "require('./services/server/package.json').version")
+
       - name: Authenticate Docker
         run: |-
           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
