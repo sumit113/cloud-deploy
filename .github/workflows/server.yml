@@ -42,9 +42,9 @@ jobs:
         run: |-
           docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
         
-      # - name: Build Server
-      #   run: |-
-      #     docker build --build-arg VERSION=$SERVER_VERSION -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest -f ./.docker/server/Dockerfile .
+      - name: Build Server
+        run: |-
+          docker build --build-arg VERSION=$SERVER_VERSION -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest -f ./.docker/server/Dockerfile .
           
       - name: Tagging app/server Docker Image
         run: |-
@@ -53,19 +53,19 @@ jobs:
         run: |-
           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
 
-      # - name: Pushing Docker Image to Artifact Registry
-      #   run: |-    
-      #     docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$(node -p "require('./services/app/package.json').version")
-      #     docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$(node -p "require('./services/server/package.json').version")          
+      - name: Pushing Docker Image to Artifact Registry
+        run: |-
+          docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$(node -p "require('./services/app/package.json').version")
+          docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$(node -p "require('./services/server/package.json').version")          
           
-      # - name: Deploy app
-      #   run: |-
-      #     gcloud run deploy $SERVICE_NAME \
-      #     --region $REGION \
-      #     --image us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$(node -p "require('./services/app/package.json').version") \
-      #     --platform "managed" \
-      #     --quiet
- 
+      - name: Deploy app
+        run: |-
+          gcloud run deploy $SERVICE_NAME \
+          --region $REGION \
+          --image us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$(node -p "require('./services/app/package.json').version") \
+          --platform "managed" \
+          --quiet
+
       # - name: Deploy sever
       #   run: |-
       #     gcloud run deploy $SERVICE_NAME \
