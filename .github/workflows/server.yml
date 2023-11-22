@@ -13,8 +13,8 @@ env:
   IMAGE_NAME_SERVER: test-deploy-server
   REPO_NAME: cloud-deploy
   SERVICE_NAME: test-deploy
-  APP_VERSION: $(node p "require('./services/app/package.json').version")
-  SERVER_VERSION: $(node p "require('./services/server/package.json').version")
+  APP_VERSION: $(node -p "require('./services/app/package.json').version")
+  SERVER_VERSION: $(node -p "require('./services/server/package.json').version")
 
 jobs:
   build-and-deploy:
@@ -40,16 +40,16 @@ jobs:
 
       - name: Build App
         run: |-
-          docker build --build-arg VERSION=$APP_VERSION -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
+          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
         
-      - name: Build Server
-        run: |-
-          docker build --build-arg VERSION=$SERVER_VERSION -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest -f ./.docker/server/Dockerfile .
+      # - name: Build Server
+      #   run: |-
+      #     docker build --build-arg VERSION=$SERVER_VERSION -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest -f ./.docker/server/Dockerfile .
           
       - name: Tagging app/server Docker Image
         run: |-
           docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$APP_VERSION
-          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$SERVER_VERSION          
+          # docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$SERVER_VERSION          
       - name: Authenticate Docker
         run: |-
           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
