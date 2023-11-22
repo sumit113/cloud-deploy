@@ -3,7 +3,7 @@ name: Cloud-serverDeploy-Action
 on:
   push:
     branches:
-      - testrepo
+      - test
 
 env:
   PROJECT_ID: tidal-guild-377418
