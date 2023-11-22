@@ -20,7 +20,7 @@ jobs:
       - name: Checkout app1 code
         uses: actions/checkout@v3
         with:
-          path: /services/app
+          path: ./services/app
 
       # Authenticate with Google Cloud
       - id: "auth"
@@ -34,7 +34,7 @@ jobs:
       - name: Build app Docker image
         uses: docker/build-push-action@v2
         with:
-          context: /services/app
+          context: ./services/app
           file: /.docker/app/Dockerfile
           push: false
           tags: app:latest
