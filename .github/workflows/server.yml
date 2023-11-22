@@ -38,7 +38,7 @@ jobs:
 
       - name: Build App
         run: |-
-          docker --build-arg VERSION=$(node -p "require('./services/app/package.json').version") -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
+          docker build --build-arg VERSION=$(node -p "require('./services/app/package.json').version") -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
       # - name: Tagging app Docker Image
       #   run: |-
       #     docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./services/app/package.json').version")   
