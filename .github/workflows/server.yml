@@ -38,14 +38,14 @@ jobs:
 
       - name: Build App
         run: |-
-          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
+          docker --build-arg VERSION=$(node -p "require('./services/app/package.json').version") -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
       # - name: Tagging app Docker Image
       #   run: |-
       #     docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./services/app/package.json').version")   
       
-      - name: Build Server
-        run: |-
-          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest -f ./.docker/server/Dockerfile .
+      # - name: Build Server
+      #   run: |-
+      #     docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest -f ./.docker/server/Dockerfile .
       # - name: Tagging server Docker Image
       #   run: |-
       #     docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./services/server/package.json').version")
@@ -55,7 +55,7 @@ jobs:
 
       - name: Tagging and Pushing Docker Image to Artifact Registry
         run: |-
-          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./services/server/package.json').version")
+          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./services/app/package.json').version")
       #     docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./services/server/package.json').version")
 
       # - name: Deploy
