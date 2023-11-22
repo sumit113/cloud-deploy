@@ -31,11 +31,12 @@ jobs:
       # Setup gcloud CLI/SDK
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
+        
       - name: Build app Docker image
         uses: docker/build-push-action@v2
         with:
           context: ./services/app
-          file: ./.docker/app/Dockerfile
+          file: .docker/app/Dockerfile
           push: false
           tags: app:latest
   # build-app2:
