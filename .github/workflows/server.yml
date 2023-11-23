@@ -1,7 +1,10 @@
 name: Cloud-serverDeploy-Action
 
 on:
-  push:    
+  push:
+    paths:
+      - '**'
+      - '!.github/workflows/**'
     branches:
       - testrepo
 
@@ -13,8 +16,8 @@ env:
   IMAGE_NAME_SERVER: test-deploy-server
   REPO_NAME: cloud-deploy
   SERVICE_NAME: test-deploy
-  APP_VERSION: $("require('./services/app/package.json').version")
-  SERVER_VERSION: $("require('./services/server/package.json').version")
+  APP_VERSION: $(node -p "require('./services/app/package.json').version")
+  SERVER_VERSION: $(node -p "require('./services/server/package.json').version")
 
 jobs:
   build-and-deploy:
@@ -48,8 +51,8 @@ jobs:
           
       - name: Tagging app/server Docker Image
         run: |-
-          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$APP_VERSION
-          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$SERVER_VERSION
+          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$(node -p "require('./services/app/package.json').version")
+          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$(node -p "require('./services/server/package.json').version")
 
       # - name: Authenticate Docker
       #   run: |-
