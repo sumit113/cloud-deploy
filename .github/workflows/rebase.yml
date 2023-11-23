@@ -28,5 +28,34 @@ jobs:
         skip-if-no-commits: 'true'
         tag-prefix: 'v'
         commit-message: 'CI: bumps version to {{version}} [skip ci]'
-        bump-policy: 'last-commit
+        bump-policy: 'last-commit'
+  rebase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Pull latest changes
+        run: git pull origin main
+
+      - name: Checkout release branch
+        run: git checkout release
+
+      - name: Rebase release branch with main
+        run: git rebase main
+
+      - name: Push changes to release branch
+        run: git push origin release
+
+      - name: Checkout dev branch
+        run: git checkout dev
+
+      - name: Rebase dev branch with main
+        run: git rebase main
+
+      - name: Push changes to dev branch
+        run: git push origin dev
+    
         
