@@ -39,7 +39,7 @@ jobs:
       run: git pull origin main
 
     - name: Checkout release branch
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: release,
         
@@ -50,7 +50,7 @@ jobs:
       run: git push origin release
 
     - name: Checkout dev branch
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: dev,
 
