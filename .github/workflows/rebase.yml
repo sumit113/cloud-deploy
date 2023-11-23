@@ -47,6 +47,9 @@ jobs:
       with:
         ref: release
         
+    - name: checking branch name
+      run: git branch -a
+      
     - name: Rebase release branch with main
       run: git rebase main
 
