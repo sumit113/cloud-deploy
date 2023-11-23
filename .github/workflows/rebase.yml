@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev
-      - release
 
 jobs:
   build:
@@ -39,23 +37,23 @@ jobs:
       run: git pull origin main
 
     - name: Checkout release branch
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: release,
         
-    - name: Rebase release branch with main
-      run: git rebase main
+    # - name: Rebase release branch with main
+    #   run: git rebase main
 
-    - name: Push changes to release branch
-      run: git push origin release
+    # - name: Push changes to release branch
+    #   run: git push origin release
 
-    - name: Checkout dev branch
-      uses: actions/checkout@v3
-      with:
-        ref: dev,
+    # - name: Checkout dev branch
+    #   uses: actions/checkout@v3
+    #   with:
+    #     ref: dev,
 
-    - name: Rebase dev branch with main
-      run: git rebase main
+    # - name: Rebase dev branch with main
+    #   run: git rebase main
 
-    - name: Push changes to dev branch
-      run: git push origin dev    
+    # - name: Push changes to dev branch
+    #   run: git push origin dev    
