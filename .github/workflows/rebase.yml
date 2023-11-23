@@ -28,4 +28,5 @@ jobs:
         skip-if-no-commits: 'true'
         tag-prefix: 'v'
         commit-message: 'CI: bumps version to {{version}} [skip ci]'
-        bump-policy: 'last-commit'
+        bump-policy: 'last-commit
+        
