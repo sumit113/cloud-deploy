@@ -52,7 +52,7 @@ jobs:
       
     - name: Rebase release branch with main
       run: |
-         git rebase origin main
+         git rebase main
       continue-on-error: true
     - name: Push changes to release branch
       run: git push origin release
