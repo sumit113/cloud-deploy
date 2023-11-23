@@ -11,19 +11,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Fetch main branch
-        run: git fetch origin main
       - name: Rebase release branch
         run: |
           git checkout release
+          git fetch origin main
           git rebase origin/main
-        continue-on-error: true
-      - name: Resolve conflicts
-        run: |
-          # Resolve conflicts manually
-          git rebase --continue
-        continue-on-error: true
-      - name: Push changes
-        run: git push --force
-    
-        
+          git push --force
+      # - name: Rebase dev branch
+      #   run: |
+      #     git checkout dev
+      #     git fetch origin main
+      #     git rebase origin/main
+      #     git push --force
