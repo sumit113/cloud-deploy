@@ -53,6 +53,10 @@ jobs:
     - name: Rebase release branch with main
       run: |
          git rebase origin/main
+    - name: Resolve conflicts
+      run: |
+         # Resolve conflicts manually
+         git rebase --continue     
          
     - name: Push changes to release branch
       run: git push origin release
