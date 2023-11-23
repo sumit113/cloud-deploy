@@ -35,8 +35,8 @@ jobs:
       with:
         ref: main
 
-    - name: Pull latest changes
-      run: git fetch origin main
+    - name: fetch latest changes
+      run: git fetch --all
     
         
     - name: checking branch name
@@ -53,7 +53,7 @@ jobs:
     - name: Rebase release branch with main
       run: |
          git rebase main
-      continue-on-error: true
+         
     - name: Push changes to release branch
       run: git push origin release
 
