@@ -33,7 +33,7 @@ jobs:
     - name: Checkout main branch
       uses: actions/checkout@v2
       with:
-        ref: main, release, dev
+        ref: main,
     - name: checking branch name
       run: git branch -a
       
@@ -41,8 +41,10 @@ jobs:
       run: git pull origin main
 
     - name: Checkout release branch
-      run: git checkout release
-
+      uses: actions/checkout@v2
+      with:
+        ref: release,
+        
     - name: Rebase release branch with main
       run: git rebase main
 
@@ -50,7 +52,9 @@ jobs:
       run: git push origin release
 
     - name: Checkout dev branch
-      run: git checkout dev
+      uses: actions/checkout@v2
+      with:
+        ref: dev,
 
     - name: Rebase dev branch with main
       run: git rebase main
