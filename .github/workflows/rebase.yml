@@ -51,13 +51,15 @@ jobs:
       run: git branch -a
       
     - name: Rebase release branch with main
-      run: git rebase main
+      run: |
+         git fetch origin main
+         git rebase main
 
-    # - name: Push changes to release branch
-    #   run: git push origin release
+    - name: Push changes to release branch
+      run: git push origin release
 
     # - name: Checkout dev branch
-    #   uses: actions/checkout@v3
+    #   uses: actions/checkout@v4
     #   with:
     #     ref: dev,
 
