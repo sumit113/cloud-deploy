@@ -30,6 +30,15 @@ jobs:
         commit-message: 'CI: bumps version to {{version}} [skip ci]'
         bump-policy: 'last-commit'
         
+    - name: Checkout main branch
+      uses: actions/checkout@v4
+      with:
+        ref: main
+
+    - name: Pull latest changes
+      run: git pull origin main
+    
+        
     - name: checking branch name
       run: git branch -a
 
