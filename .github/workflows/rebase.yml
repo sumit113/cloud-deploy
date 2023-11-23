@@ -32,17 +32,14 @@ jobs:
         
     - name: checking branch name
       run: git branch -a
-      
-    - name: Pull latest changes
-      run: git pull origin main
 
     - name: Checkout release branch
       uses: actions/checkout@v4
       with:
-        ref: release,
+        ref: release
         
-    # - name: Rebase release branch with main
-    #   run: git rebase main
+    - name: Rebase release branch with main
+      run: git rebase main
 
     # - name: Push changes to release branch
     #   run: git push origin release
