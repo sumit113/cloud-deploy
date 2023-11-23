@@ -1,4 +1,4 @@
-name: package version update
+name: Rebase branches
 
 on:
   push:
@@ -6,56 +6,24 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: 'Automated Version Bump'
-      uses: 'qubetools/qubetools-gh-action-semantic-version-tag-bump@v1.0.0'
-      id: version-bump
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        major-wording: 'major,Major,breaking,Breaking'
-        minor-wording: 'minor,Minor,new,New,feat,Feat,feature,Feature,release,Release'
-        patch-wording: 'fix,Fix,fixes,Fixes,patch,Patch'
-        rc-wording: 'rc,pre'
-        hours-to-go-back: 24
-        skip-if-no-commits: 'true'
-        tag-prefix: 'v'
-        commit-message: 'CI: bumps version to {{version}} [skip ci]'
-        bump-policy: 'last-commit'
   rebase:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main branch
+      - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: main
-
-      - name: Pull latest changes
-        run: git pull origin main
-
-      - name: Checkout release branch
-        run: git checkout release
-
-      - name: Rebase release branch with main
-        run: git rebase main
-
-      - name: Push changes to release branch
-        run: git push origin release
-
-      - name: Checkout dev branch
-        run: git checkout dev
-
-      - name: Rebase dev branch with main
-        run: git rebase main
-
-      - name: Push changes to dev branch
-        run: git push origin dev
+      - name: Fetch main branch
+        run: git fetch origin main
+      - name: Rebase release branch
+        run: |
+          git checkout release
+          git rebase origin/main
+        continue-on-error: true
+      - name: Resolve conflicts
+        run: |
+          # Resolve conflicts manually
+          git rebase --continue
+        continue-on-error: true
+      - name: Push changes
+        run: git push --force
     
         
