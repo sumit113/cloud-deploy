@@ -33,7 +33,7 @@ jobs:
     - name: Checkout main branch
       uses: actions/checkout@v2
       with:
-        ref: main
+        ref: main, release, dev
     - name: checking branch name
       run: git branch -a
       
