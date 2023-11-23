@@ -2,6 +2,9 @@ name: Cloud-serverDeploy-Action
 
 on:
   push:
+    paths:
+      - '**'
+      - '!.github/workflows/**'
     branches:
       - testrepo
 
