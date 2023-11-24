@@ -50,7 +50,7 @@ jobs:
         
     - name: cherry-pick release branch with main
       run: |
-         git cherry-pick 
+         git cherry-pick ${{ steps.outputs.output }}
 
       
     # - name: fetch latest changes
