@@ -1,0 +1,54 @@
+name: Cloud-Deploy-Action
+
+on:
+  push:
+    branches:
+      - test
+
+env:
+  PROJECT_ID: tidal-guild-377418
+  REGION: us-central1
+  # project-name but it can be anything you want
+  IMAGE_NAME: test-deploy
+  REPO_NAME: cloud-deploy
+  SERVICE_NAME: test-deploy
+
+jobs:
+  build-and-deploy:
+    name: Setup, Build, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Authenticate with Google Cloud
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT }}"
+
+      # Setup gcloud CLI/SDK
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Authenticate and Build 
+        run: |-
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
+          docker build --build-arg VERSION=$(node -p "require('./package.json').version") -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest .
+
+      - name: Authenticate Docker
+        run: |-
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
+
+      - name: Tagging and Pushing Docker Image to Artifact Registry
+        run: |-
+          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./package.json').version")
+          docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./package.json').version")
+
+      - name: Deploy
+        run: |-
+          gcloud run deploy $SERVICE_NAME \
+          --region $REGION \
+          --image us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$(node -p "require('./package.json').version") \
+          --platform "managed" \
+          --quiet
