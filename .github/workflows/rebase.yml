@@ -41,7 +41,7 @@ jobs:
 
     - name: Use output of previous step
       run: |
-        echo "Output of previous step: ${{ steps.outputs.output }}"
+        echo "Output of previous step: ${{ steps.step_id.outputs.output }}"
 
     - name: git checkout to release
       uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
         
     - name: cherry-pick release branch with main
       run: |
-         git cherry-pick ${{ steps.outputs.output }}
+         git cherry-pick ${{ steps.step_id.outputs.output }}
 
       
     # - name: fetch latest changes
