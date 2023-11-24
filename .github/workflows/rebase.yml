@@ -34,9 +34,14 @@ jobs:
       with:
         ref: main
 
-    - name: latest commit
+    - name: Run command and store output
       run: |
-         git rev-parse HEAD
+        output=$(git rev-parse HEAD)
+        echo "::set-output name=output::$output"
+
+    - name: Use output of previous step
+      run: |
+        echo "Output of previous step: ${{ steps.outputs.output }}"
 
     - name: git checkout to release
       uses: actions/checkout@v4
@@ -45,7 +50,7 @@ jobs:
         
     - name: cherry-pick release branch with main
       run: |
-         git cherry-pick cat "git rev-parse HEAD"
+         git cherry-pick 
 
       
     # - name: fetch latest changes
