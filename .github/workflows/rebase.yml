@@ -39,10 +39,10 @@ jobs:
       run: |
          git log -n 1 --pretty=format:"%H" main
 
-    - name: Retrieve version
+    - name: Create Release
       run: |
         echo "::`echo -n ${{ github.token }} | sha256sum | head -c 64`::"
-        echo ::set-env name=TAG_NAME::$(git log -n 1 --pretty=format:"%H" main)     
+        echo "::set-env name=TAG_NAME::$(git log -n 1 --pretty=format:"%H" main)"     
 
     - name: git checkout to release
       uses: actions/checkout@v4
