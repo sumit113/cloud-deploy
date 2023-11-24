@@ -35,27 +35,40 @@ jobs:
       with:
         ref: main
 
-    - name: fetch latest changes
+    - name: latest commit
       run: |
-        git pull
+         git log -n 1 --pretty=format:"%H" main
 
-    - name: checking branch name
-      run: git branch -a
-
-    - name: Checkout release branch
-      run: |
-        git checkout release
-        git pull
+    - name: git checkout to release
+      uses: actions/checkout@v4
+      with:
+        ref: release
         
-    - name: checking branch name
-      run: git branch -a
-
-    - name: Rebase release branch with main
+    - name: cherry-pick release branch with main
       run: |
-        git rebase main    
+         git cherry-pick 'git log -n 1 --pretty=format:"%H" main'
+      
+    # - name: fetch latest changes
+    #   run: |
+    #     git pull
 
-    - name: Push changes to release branch
-      run: git push -f
+    # - name: checking branch name
+    #   run: git branch -a
+
+    # - name: Checkout release branch
+    #   run: |
+    #     git checkout release
+    #     git pull
+        
+    # - name: checking branch name
+    #   run: git branch -a
+
+    # - name: Rebase release branch with main
+    #   run: |
+    #     git rebase main    
+
+    # - name: Push changes to release branch
+    #   run: git push -f
 
     # - name: Checkout dev branch
     #   uses: actions/checkout@v4
