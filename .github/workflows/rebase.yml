@@ -36,12 +36,13 @@ jobs:
 
     - name: Run command and store output
       run: |
+      id: step_one
         output=$(git rev-parse HEAD)
         echo "::set-output name=output::$output"
 
     - name: Use output of previous step
       run: |
-        echo "Output of previous step: ${{ steps.step_id.output }}"
+        echo "Output of previous step: ${{ steps.step_one.outputs.output }}"
 
     - name: git checkout to release
       uses: actions/checkout@v4
@@ -50,7 +51,7 @@ jobs:
         
     - name: cherry-pick release branch with main
       run: |
-         git cherry-pick ${{ steps.step_id.output }}
+         git cherry-pick ${{ steps.step_one.outputs.output }}
 
       
     # - name: fetch latest changes
