@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -46,7 +45,7 @@ jobs:
         
     - name: cherry-pick release branch with main
       run: |
-         git cherry-pick $last_commit
+         git cherry-pick main
 
       
     # - name: fetch latest changes
