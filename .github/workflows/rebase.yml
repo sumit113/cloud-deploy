@@ -49,13 +49,13 @@ jobs:
         
     - name: checking branch name
       run: git branch -a
-      
+
     - name: Rebase release branch with main
       run: |
-         git rebase origin/main    
-         
+        git rebase main    
+
     - name: Push changes to release branch
-      run: git push origin release
+      run: git push -f
 
     # - name: Checkout dev branch
     #   uses: actions/checkout@v4
