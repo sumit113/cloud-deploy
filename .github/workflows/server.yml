@@ -1,0 +1,80 @@
+name: Cloud-serverDeploy-Action
+
+on:
+  push:
+    paths:
+      - '**'
+      - '!.github/workflows/**'
+    branches:
+      - testrepo
+
+env:
+  PROJECT_ID: tidal-guild-377418
+  REGION: us-central1
+  # project-name but it can be anything you want
+  IMAGE_NAME_APP: test-deploy
+  IMAGE_NAME_SERVER: test-deploy-server
+  REPO_NAME: cloud-deploy
+  SERVICE_NAME: test-deploy
+  APP_VERSION: $(node -p "require('./services/app/package.json').version")
+  SERVER_VERSION: $(node -p "require('./services/server/package.json').version")
+
+jobs:
+  build-and-deploy:
+    name: Setup, Build, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Authenticate with Google Cloud
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT }}"
+
+      # Setup gcloud CLI/SDK
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Configure docker for GCP
+        run: |-
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
+
+      - name: Build App
+        run: |-
+          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest -f ./.docker/app/Dockerfile .
+        
+      - name: Build Server
+        run: |-
+          docker build -t us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest -f ./.docker/server/Dockerfile .
+          
+      - name: Tagging app/server Docker Image
+        run: |-
+          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$(node -p "require('./services/app/package.json').version")
+          docker tag us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:latest us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$(node -p "require('./services/server/package.json').version")
+
+      # - name: Authenticate Docker
+      #   run: |-
+      #     gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
+
+      # - name: Pushing Docker Image to Artifact Registry
+      #   run: |-
+      #     docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$(node -p "require('./services/app/package.json').version")
+      #     docker push us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$(node -p "require('./services/server/package.json').version")          
+          
+      # - name: Deploy app
+      #   run: |-
+      #     gcloud run deploy $SERVICE_NAME \
+      #     --region $REGION \
+      #     --image us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_APP:$(node -p "require('./services/app/package.json').version") \
+      #     --platform "managed" \
+      #     --quiet
+
+      # - name: Deploy sever
+      #   run: |-
+      #     gcloud run deploy $SERVICE_NAME \
+      #     --region $REGION \
+      #     --image us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME_SERVER:$(node -p "require('./services/server/package.json').version") \
+      #     --platform "managed" \
+      #     --quiet
