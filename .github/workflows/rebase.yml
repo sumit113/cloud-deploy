@@ -37,9 +37,7 @@ jobs:
 
     - name: latest commit
       run: |
-         git log -n 1 --pretty=format:"%H" main
-      env:
-        test_env: $(git log -n 1 --pretty=format:"%H" main)     
+         last_commit=$(git rev-parse HEAD)   
 
     - name: git checkout to release
       uses: actions/checkout@v4
@@ -48,7 +46,7 @@ jobs:
         
     - name: cherry-pick release branch with main
       run: |
-         git cherry-pick $test_env
+         git cherry-pick $last_commit
 
       
     # - name: fetch latest changes
