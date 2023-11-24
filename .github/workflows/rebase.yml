@@ -36,16 +36,16 @@ jobs:
         ref: main
 
     - name: fetch latest changes
-      run: git fetch --all
-    
-        
+      run: |
+        git pull
+
     - name: checking branch name
       run: git branch -a
 
     - name: Checkout release branch
-      uses: actions/checkout@v4
-      with:
-        ref: release
+      run: |
+        git checkout release
+        git pull
         
     - name: checking branch name
       run: git branch -a
