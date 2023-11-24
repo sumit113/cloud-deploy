@@ -37,8 +37,7 @@ jobs:
 
     - name: latest commit
       run: |
-         commit_hash=$(git rev-parse HEAD)
-
+         commit_id=$(git rev-parse HEAD)
 
     - name: git checkout to release
       uses: actions/checkout@v4
@@ -47,7 +46,7 @@ jobs:
         
     - name: cherry-pick release branch with main
       run: |
-         git cherry-pick commit_hash
+         git cherry-pick $commit_id
       
     # - name: fetch latest changes
     #   run: |
