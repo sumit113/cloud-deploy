@@ -46,7 +46,7 @@ jobs:
         
     - name: cherry-pick release branch with main
       run: |
-         git cherry-pick 'git log -n 1 --pretty=format:"%H" main'
+         git cherry-pick git log -n 1 --pretty=format:"%H" main
       
     # - name: fetch latest changes
     #   run: |
