@@ -44,12 +44,12 @@ jobs:
       run: |
         echo "Output of previous step: ${{ steps.step_one.outputs.output }}"
 
-    - name: git checkout to release
+    - name: git checkout to feature
       uses: actions/checkout@v4
       with:
-        ref: release
+        ref: feature
         
-    - name: cherry-pick release branch with main
+    - name: cherry-pick feature branch with main
       run: |
          git cherry-pick ${{ steps.step_one.outputs.output }}
 
