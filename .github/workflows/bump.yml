@@ -2,7 +2,7 @@ name: Bump version
 on:
   pull_request:
     types:
-      - closed
+      - published
     branches:
       - main
 
