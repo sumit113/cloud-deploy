@@ -31,18 +31,3 @@ jobs:
         tag-prefix: 'v'
         commit-message: 'CI: bumps version to {{version}} [skip ci]'
         bump-policy: 'last-commit'
-    
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: npm install
-    - name: Build package
-      run: npm run build
-    - name: Publish to npm
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-      run: |
-        npm config set '//registry.npmjs.org/:_authToken' "${NODE_AUTH_TOKEN}"
-        npm publish
