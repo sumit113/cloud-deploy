@@ -3,7 +3,7 @@ name: package version update
 on:
   push:
     branches:
-      - main
+      - mai
 jobs:
   build:
     runs-on: ubuntu-latest
