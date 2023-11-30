@@ -1,6 +1,6 @@
 {
   "name": "cloud-deploy",
-  "version": "4.1.0",
+  "version": "4.3.1",
   "description": "See  https://www.youtube.com/embed/IjUnQ9kMnVo ! This repo is based on that video!",
   "main": "index.js",
   "scripts": {
