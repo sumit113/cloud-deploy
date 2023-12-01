@@ -1,20 +1,47 @@
-name: Publish to npm
+name: package version update
+
 on:
   push:
     branches:
       - main
+
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - name: Install dependencies
-        run: npm install
-      - name: Publish to npm
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: 'Automated Version Bump'
+      uses: 'qubetools/qubetools-gh-action-semantic-version-tag-bump@v1.0.0'
+      id: version-bump
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        major-wording: 'major,Major,breaking,Breaking'
+        minor-wording: 'minor,Minor,new,New,feat,Feat,feature,Feature,release,Release'
+        patch-wording: 'fix,Fix,fixes,Fixes,patch,Patch'
+        rc-wording: 'rc,pre'
+        hours-to-go-back: 24
+        skip-if-no-commits: 'true'
+        tag-prefix: 'v'
+        commit-message: 'CI: bumps version to {{version}} [skip ci]'
+        bump-policy: 'last-commit'
+
+    - name: Bump version
+      uses: bcomnes/npm-bump@v2
+      with:
+        email: your-email@example.com
+        type: patch
+        postbump: npm run build
+    - name: Commit version bump
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -m "Bump version to ${{ steps.npm-bump.outputs.release_tag }}"
+    - name: Push changes
+      uses: ad-m/github-push-action@main
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}    
