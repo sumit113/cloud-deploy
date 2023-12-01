@@ -17,7 +17,7 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-            const packagesDir = './packages';
+            const packagesDir = './services/app/*';
             const packages = fs.readdirSync(packagesDir);
             packages.forEach((packageName) => {
               const packagePath = path.join(packagesDir, packageName);
