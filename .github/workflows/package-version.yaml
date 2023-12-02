@@ -1,28 +1,30 @@
 name: Publish packages
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - main
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
+      - uses: ./
         id: changes
         with:
           filters: |
             services:
-              - 'app/**'            
+              - 'app/**'
+            services:  
               - 'server/**'
       - name: Publish app
         if: steps.changes.outputs.app == 'true'
         uses: JS-DevTools/npm-publish@v3
         with:
           token: $ { { secrets.NPM_TOKEN }}
-          package: app/package.json
+          package: ./services/app/package.json
       - name: Publish server
         if: steps.changes.outputs.server == 'true'
         uses: JS-DevTools/npm-publish@v3
         with:
           token: $ { { secrets.NPM_TOKEN }}
-          package: server/package.json
+          package: ./services/server/package.json
