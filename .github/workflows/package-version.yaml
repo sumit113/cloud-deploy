@@ -13,8 +13,7 @@ jobs:
         with:
           filters: |
             services:
-              - 'app/**'
-            services:  
+              - 'app/**'  
               - 'server/**'
       - name: Publish app
         if: steps.changes.outputs.app == 'true'
