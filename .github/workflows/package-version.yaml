@@ -19,7 +19,7 @@ jobs:
         if: steps.changes.outputs.app == 'true'
         uses: JS-DevTools/npm-publish@v3
         with:
-          token: $ { { secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           package: ./services/app/package.json
       - name: Publish server
         if: steps.changes.outputs.server == 'true'
