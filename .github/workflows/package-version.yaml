@@ -1,32 +1,29 @@
-name: Publish app and server packages
+name: Publish packages
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 jobs:
-  publish-app:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: changes
         with:
-          node-version: "20"
-      - run: npm ci
-      - run: npm test
-      - uses: JS-DevTools/npm-publish@v3
-        with:
-          token: $ { { secrets.NPM_TOKEN }}
-          package: ./services/app/ # specify the app folder
-  publish-server:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "20"
-      - run: npm ci
-      - run: npm test
-      - uses: JS-DevTools/npm-publish@v3
+          filters: |
+            app:
+              - 'app/**'
+            server:
+              - 'server/**'
+      - name: Publish app
+        if: steps.changes.outputs.app == 'true'
+        uses: JS-DevTools/npm-publish@v3
         with:
           token: $ { { secrets.NPM_TOKEN }}
-          package: server # specify the server folder
+          package: app/package.json
+      - name: Publish server
+        if: steps.changes.outputs.server == 'true'
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: $ { { secrets.NPM_TOKEN }}
+          package: server/package.json
