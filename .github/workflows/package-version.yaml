@@ -10,7 +10,7 @@ jobs:
     #   output1: ${{ steps.filter.outputs.services }}
     steps:
     - name: Bump app version
-      uses: sumit113/cloud-deploy@v1
+      uses: sumit113/cloud-deploy@main
       with:
           package-path: ./services/app/**
           part: patch
