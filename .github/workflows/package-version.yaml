@@ -8,12 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     # outputs:
     #   output1: ${{ steps.filter.outputs.services }}
-    steps:
-    - name: Run a script 
-      run: |
-        cd ./services/app/
-        cat "pwd"
-        
+    steps:   
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
       id: changes
