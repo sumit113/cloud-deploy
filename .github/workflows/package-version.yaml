@@ -1,18 +1,51 @@
-name: package version update
+name: Publish npm packages
 
 on:
   push:
     branches:
-      - main
+      - main # Change this to your default branch
+
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-    - name: 'Automated Version Bump'
-      uses: 'phips28/gh-action-bump-version@master'
-      env:
-        GITHUB_TOKEN: $ { { secrets.GITHUB_TOKEN }}
-      with:
-        package-json-path: './services/app/package.json'
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get changed files
+        id: changed_files
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            app:
+              - './services/app/**'
+            server:
+              - './services/server/**'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish app package
+        if: steps.changed_files.outputs.app == 'true'
+        working-directory: ./services/app/
+        run: |
+          npm install
+          npm run build
+          npm-version-bump --bump patch
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish server package
+        if: steps.changed_files.outputs.server == 'true'
+        working-directory: server
+        run: |
+          npm install
+          npm run build
+          npm-version-bump --bump patch
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
