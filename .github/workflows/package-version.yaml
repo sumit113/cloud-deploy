@@ -9,21 +9,9 @@ jobs:
     # outputs:
     #   output1: ${{ steps.filter.outputs.services }}
     steps:
-    - name: 'Automated Version Bump'
-      uses: 'qubetools/qubetools-gh-action-semantic-version-tag-bump@v1.0.0'
-      id: version-bump
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        major-wording: 'major,Major,breaking,Breaking'
-        minor-wording: 'minor,Minor,new,New,feat,Feat,feature,Feature,release,Release'
-        patch-wording: 'fix,Fix,fixes,Fixes,patch,Patch'
-        rc-wording: 'rc,pre'
-        hours-to-go-back: 24
-        skip-if-no-commits: 'true'
-        tag-prefix: 'v'
-        commit-message: 'CI: bumps version to {{version}} [skip ci]'
-        bump-policy: 'last-commit'
+    - name: Bump version
+      working-directory: ./services/app
+      run: npm version minor -m "v%s"
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
       id: changes
