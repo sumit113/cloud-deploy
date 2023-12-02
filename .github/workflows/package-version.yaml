@@ -17,7 +17,7 @@ jobs:
           # Check if any of the modified files are in the app folder
           if echo "$MODIFIED_FILES" | grep -q "^app/"; then
             # Bump the version of the package.json file in the app folder
-            cd app
+            cd ./services/app
             npm version patch -m "Bump app version to %s"
             # Push the changes back to the repository
             git push origin ${{ github.ref }}
