@@ -16,7 +16,7 @@ jobs:
       - uses: JS-DevTools/npm-publish@v3
         with:
           token: $ { { secrets.NPM_TOKEN }}
-          package: app # specify the app folder
+          package: ./services/app/ # specify the app folder
   publish-server:
     runs-on: ubuntu-latest
     steps:
