@@ -11,9 +11,9 @@ jobs:
         id: changes
         with:
           filters: |
-            app:
+            services:
               - 'app/**'
-            server:
+            services:
               - 'server/**'
       - name: Publish app
         if: steps.changes.outputs.app == 'true'
