@@ -9,9 +9,11 @@ jobs:
     # outputs:
     #   output1: ${{ steps.filter.outputs.services }}
     steps:
-    - name: Bump version
-      working-directory: ./services/app/package.json
-      run: npm version minor -m "v%s"
+    - name: Run a script 
+      run: |
+        cd ./services/app/
+        cat "pwd"
+        
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
       id: changes
