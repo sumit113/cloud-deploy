@@ -1,43 +1,24 @@
-name: Publish packages
-on:
-  push:
-    branches: 
-      - main
+name: Bump app version
+on: push
 jobs:
-  publish:
+  bump-app-version:
     runs-on: ubuntu-latest
-    # outputs:
-    #   output1: ${{ steps.filter.outputs.services }}
     steps:
-    - name: Bump app version
-      uses: sumit113/cloud-deploy@main
-      with:
-          package-path: ./services/app/**
-          part: patch
-    - name: Commit and push changes
-      run: |
-        git config --global user.name 'sumit113'
-        git config --global user.email 'sumit.lal007@gmail.com'
-        git commit -am "Bump app version"
-        git push
-    - uses: actions/checkout@v2
-    - uses: dorny/paths-filter@v2
-      id: changes
-      with:
-          filters: |
-            app:
-              - 'services/app/**'  
-            server:  
-              - 'services/server/**'
-    - name: Publish app
-      if: steps.changes.outputs.app == 'true'
-      uses: JS-DevTools/npm-publish@v3
-      with:
-          token: $ { { secrets.NPM_TOKEN }}
-          package: ./services/app/package.json
-    - name: Publish server
-      if: steps.changes.outputs.server == 'true'
-      uses: JS-DevTools/npm-publish@v3
-      with:
-          token: $ { { secrets.NPM_TOKEN }}
-          package: ./services/server/package.json
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Check modified files
+        run: |
+          # Get the list of modified files
+          MODIFIED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
+          # Check if any of the modified files are in the app folder
+          if echo "$MODIFIED_FILES" | grep -q "^app/"; then
+            # Bump the version of the package.json file in the app folder
+            cd app
+            npm version patch -m "Bump app version to %s"
+            # Push the changes back to the repository
+            git push origin ${{ github.ref }}
+          fi
