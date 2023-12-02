@@ -4,8 +4,8 @@ on:
     branches: 
       - main
     paths:
-      - 'app/**'
-      - 'server/**'
+      - './services/app/**'
+      - './services/server/**'
 jobs:
   publish:
     runs-on: ubuntu-latest
