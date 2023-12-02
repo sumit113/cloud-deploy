@@ -3,12 +3,26 @@ on:
   push:
     branches: 
       - main
+    paths:
+      - 'app/**'
+      - 'server/**'
 jobs:
   publish:
     runs-on: ubuntu-latest
     # outputs:
     #   output1: ${{ steps.filter.outputs.services }}
-    steps:   
+    steps:
+    - name: Bump app version
+      uses: phips28/bump-node-package-version@v1
+      with:
+          package-path: ./services/app/**
+          part: patch
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'sumit113'
+        git config --global user.email 'sumit.lal007@gmail.com'
+        git commit -am "Bump app version"
+        git push
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
       id: changes
