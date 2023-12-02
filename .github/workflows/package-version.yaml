@@ -1,24 +1,18 @@
-name: Bump app version
-on: push
+name: package version update
+
+on:
+  push:
+    branches:
+      - main
 jobs:
-  bump-app-version:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - name: Check modified files
-        run: |
-          # Get the list of modified files
-          MODIFIED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-          # Check if any of the modified files are in the app folder
-          if echo "$MODIFIED_FILES" | grep -q "^app/"; then
-            # Bump the version of the package.json file in the app folder
-            cd ./services/app
-            npm version patch -m "Bump app version to %s"
-            # Push the changes back to the repository
-            git push origin ${{ github.ref }}
-          fi
+    - name: 'Automated Version Bump'
+      uses: 'phips28/gh-action-bump-version@master'
+      env:
+        GITHUB_TOKEN: $ { { secrets.GITHUB_TOKEN }}
+      with:
+        package-json-path: './services/app/package.json'
