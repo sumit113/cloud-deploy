@@ -13,8 +13,8 @@ jobs:
         with:
           filters: |
             services:
-              - 'app/**'  
-              - 'server/**'
+              - 'services/app/**'  
+              - 'services/server/**'
       - name: Publish app
         if: steps.changes.outputs.app == 'true'
         uses: JS-DevTools/npm-publish@v3
