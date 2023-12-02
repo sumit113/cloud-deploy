@@ -3,9 +3,6 @@ on:
   push:
     branches: 
       - main
-    paths:
-      - './services/app/**'
-      - './services/server/**'
 jobs:
   publish:
     runs-on: ubuntu-latest
