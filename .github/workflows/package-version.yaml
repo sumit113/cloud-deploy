@@ -1,36 +1,32 @@
-name: Publish Packages
+name: Publish packages
 on:
   push:
-    branches: [ main ]
+    branches: main
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      # - name:  'Automated Version Bump'
-      #   uses:  'phips28/gh-action-bump-version@master'
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     minor-wording:  'add,Adds,new'
-      #     major-wording:  'MAJOR,cut-major'
-      #     patch-wording:  'patch,fixes'     # Providing patch-wording will override commits
-      #                                 # defaulting to a patch bump.
-      #     rc-wording:     'RELEASE,alpha'
-      - name:  'Automated Version Bump'
-        uses:  'sumit113/cloud-deploy@main'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          version-type:  'minor' 
-      - name:  'Automated Version Bump'
-        uses:  'sumit113/cloud-deploy@main'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGEJSON_DIR:  'services/app'   
-      - name:  'Automated Version Bump'
-        uses:  'phips28/gh-action-bump-version@master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          node-version: "20"
+      - run: npm ci
+      - run: npm test
+      - uses: dorny/paths-filter@v2
+        id: changes
         with:
-          commit-message: 'CI: bumps version to {{version}} [skip ci]'     
+          filters: |
+            app:
+              - 'app/**'
+            server:
+              - 'server/**'
+      - uses: JS-DevTools/npm-publish@v3
+        if: steps.changes.outputs.app == 'true'
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: app
+      - uses: JS-DevTools/npm-publish@v3
+        if: steps.changes.outputs.server == 'true'
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: server
