@@ -1,58 +1,21 @@
-name: Publish npm packages
-
+name: Publish Packages
 on:
   push:
-    branches:
-      - main # Change this to your default branch
-    # paths:
-    #   - 'services/**'
-      # - 'services/server/**'
+    branches: [ main ]
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Bumping version
-        uses: jpb06/bump-package@latest
+      - uses: actions/checkout@v2
+      - name: Bump Version
+        uses: phips28/gh-action-bump-version@v10.0.1
         with:
-          path: ./services/app/package.json
-  
-
-      - name: Get changed files
-        id: changed_files
-        uses: dorny/paths-filter@v2
-        with:
-          filters: |
-            app:
-              - './services/app/**'
-            server:
-              - './services/server/**'
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Publish app package
-        if: steps.changed_files.outputs.app == 'true'
-        working-directory: ./services/app/
-        run: |
-          # npm install
-          # npm run build
-          npm-version-bump --bump patch
-          npm publish
+          tag-prefix: ''
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # - name: Publish server package
-      #   if: steps.changed_files.outputs.server == 'true'
-      #   working-directory: server
-      #   run: |
-      #     npm install
-      #     npm run build
-      #     npm-version-bump --bump patch
-      #     npm publish
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish Packages
+        uses: joshbolduc/multipublish@v1
+        with:
+          directories: app,server
+          registry-url: https://registry.npmjs.org/
+          token: ${{ secrets.NPM_TOKEN }}
