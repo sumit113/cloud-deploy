@@ -13,9 +13,14 @@ jobs:
           tag-prefix: ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish Packages
-        uses: joshbolduc/multipublish@v1
-        with:
-          directories: app,server
-          registry-url: https://registry.npmjs.org/
-          token: ${{ secrets.NPM_TOKEN }}
+      - name: Publish app package
+        if: steps.changed_files.outputs.app == 'true'
+        working-directory: ./services/app/
+        run: |
+           npm install
+           npm run build
+           npm-version-bump --bump patch
+           npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
