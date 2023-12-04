@@ -18,7 +18,7 @@ jobs:
       #                                 # defaulting to a patch bump.
       #     rc-wording:     'RELEASE,alpha'
       - name:  'Automated Version Bump'
-        uses:  ''
+        uses:  'sumit113/cloud-deploy@main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
