@@ -6,7 +6,7 @@ on:
       - '**'
       - '!.github/workflows/**'
     branches:
-      - main
+      - mai
 
 env:
   PROJECT_ID: tidal-guild-377418
