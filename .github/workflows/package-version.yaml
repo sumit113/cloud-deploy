@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main # Change this to your default branch
-    paths:
-      - 'services/**'
+    # paths:
+    #   - 'services/**'
       # - 'services/server/**'
 jobs:
   publish:
