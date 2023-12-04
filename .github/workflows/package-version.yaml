@@ -18,13 +18,13 @@ jobs:
       #                                 # defaulting to a patch bump.
       #     rc-wording:     'RELEASE,alpha'
       - name:  'Automated Version Bump'
-        uses:  'phips28/gh-action-bump-version@master'
+        uses:  ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           version-type:  'minor' 
       - name:  'Automated Version Bump'
-        uses:  'phips28/gh-action-bump-version@master'
+        uses:  'sumit113/cloud-deploy@main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGEJSON_DIR:  'services/app'   
