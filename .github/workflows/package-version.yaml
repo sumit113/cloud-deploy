@@ -13,7 +13,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
       - name: Bump app version
-        uses: sumit113/cloud-deploy@main
+        uses: bertyhell/bump-package-versions@v1.0.0
         with:
           part: patch
           strategy: highest
