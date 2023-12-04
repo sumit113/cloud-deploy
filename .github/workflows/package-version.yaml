@@ -1,8 +1,11 @@
 name: Bump app version
 on:
   push:
+    branches:
+      - main
     paths:
-      - 'app/**'
+      - 'services/app/**'
+      - 'services/server/**'
 jobs:
   bump:
     runs-on: ubuntu-latest
