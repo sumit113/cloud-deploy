@@ -1,7 +1,11 @@
 name: Publish packages
 on:
   push:
-    branches: main
+    branches: 
+       - main
+    paths:
+      - 'services/app/**'
+      - 'services/server/**'  
 jobs:
   publish:
     runs-on: ubuntu-latest
