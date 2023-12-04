@@ -17,4 +17,4 @@ jobs:
         with:
           part: patch
           strategy: highest
-          files: ./package.json,./app/package.json,./server/package.json
+          files: ./package.json ./frontend/package.json ./backend/package.json
