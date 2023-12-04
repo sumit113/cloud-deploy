@@ -13,6 +13,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Bumping version
+        uses: jpb06/bump-package@latest
+        with:
+          path: ./services/app/package.json
+  
 
       - name: Get changed files
         id: changed_files
