@@ -34,20 +34,20 @@ jobs:
         if: steps.changed_files.outputs.app == 'true'
         working-directory: ./services/app/
         run: |
-          npm install
-          npm run build
+          # npm install
+          # npm run build
           npm-version-bump --bump patch
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish server package
-        if: steps.changed_files.outputs.server == 'true'
-        working-directory: server
-        run: |
-          npm install
-          npm run build
-          npm-version-bump --bump patch
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Publish server package
+      #   if: steps.changed_files.outputs.server == 'true'
+      #   working-directory: server
+      #   run: |
+      #     npm install
+      #     npm run build
+      #     npm-version-bump --bump patch
+      #     npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
