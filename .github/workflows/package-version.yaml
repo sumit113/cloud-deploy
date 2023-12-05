@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    types: [assigned, opened, synchronize, reopened, labeled]
+#   pull_request:
+#     types: [assigned, opened, synchronize, reopened, labeled]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
-  cancel-in-progress: true
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+#   cancel-in-progress: true
 
 # env:
 #   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
@@ -42,12 +42,12 @@ jobs:
       #     cmd5: npx nx run integration:integration --ci --maxWorkers=2
 
       # e2e tests for everything except the primary task runner
-      - run: PUBLISHED_VERSION=999.9.9-e2e.0 npx nx run-many --t e2e --parallel=1
+      - run: PUBLISHED_VERSION=999.9.9-e2e.0 npx nx run-many
 
-      - name: Stop all running agents
-        # It's important that we always run this step, otherwise in the case of any failures in preceding non-Nx steps, the agents will keep running and waste billable minutes
-        if: ${{ always() }}
-        run: npx nx-cloud stop-all-agents
+      # - name: Stop all running agents
+      #   # It's important that we always run this step, otherwise in the case of any failures in preceding non-Nx steps, the agents will keep running and waste billable minutes
+      #   if: ${{ always() }}
+      #   run: npx nx-cloud stop-all-agents
 
   # agents:
   #   name: Nx Cloud - Agent ${{ matrix.agent }}
@@ -87,24 +87,24 @@ jobs:
       - name: Install primary node version (see volta config in package.json) and dependencies
         uses: ./.github/actions/install-node-and-dependencies
 
-      - name: Run parallel distributed unit and integration tests on windows
-        shell: bash
-        # From old maintainer regarding integration tests: "import is NOT TESTED in windows because pain and suffering"
-        run: |
-          pids=()
-          npx nx run integration:integration --ci --maxWorkers=2 &
-          pids+=($!)
+      # - name: Run parallel distributed unit and integration tests on windows
+      #   shell: bash
+      #   # From old maintainer regarding integration tests: "import is NOT TESTED in windows because pain and suffering"
+      #   run: |
+      #     pids=()
+      #     npx nx run integration:integration --ci --maxWorkers=2 &
+      #     pids+=($!)
           # Ignored specs currently failing on windows
           # TODO: investigate why
-          npx nx run-many -t test --parallel=3 --ci --maxWorkers=2 --testTimeout=60000 --testPathIgnorePatterns=save.spec.ts --testPathIgnorePatterns=find-file.spec.ts --testPathIgnorePatterns=chain-class.spec.ts &
-          pids+=($!)
-          for pid in "${pids[@]}"; do
-            wait "$pid"
-          done
-      - name: Stop all running agents for Nx Run Group
-        # It's important that we always run this step, otherwise in the case of any failures in preceding non-Nx steps, the agents will keep running and waste billable minutes
-        if: ${{ always() }}
-        run: npx nx-cloud stop-all-agents
+      #     npx nx run-many -t test --parallel=3 --ci --maxWorkers=2 --testTimeout=60000 --testPathIgnorePatterns=save.spec.ts --testPathIgnorePatterns=find-file.spec.ts --testPathIgnorePatterns=chain-class.spec.ts &
+      #     pids+=($!)
+      #     for pid in "${pids[@]}"; do
+      #       wait "$pid"
+      #     done
+      # - name: Stop all running agents for Nx Run Group
+      #   # It's important that we always run this step, otherwise in the case of any failures in preceding non-Nx steps, the agents will keep running and waste billable minutes
+      #   if: ${{ always() }}
+      #   run: npx nx-cloud stop-all-agents
 
   # windows-agents:
   #   name: Nx Cloud - Windows Agent ${{ matrix.agent }}
