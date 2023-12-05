@@ -1,36 +1,32 @@
-name: Publish packages
+name: 'Bump Version'
+
 on:
   push:
-    branches: 
-       - main
-    paths:
-      - 'services/app/**'
-      - 'services/server/**'  
+    branches:
+      - 'main'
+
 jobs:
-  publish:
+  bump-version:
+    name: 'Bump Version on master'
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v2'
         with:
-          node-version: "20"
-      - run: npm install
-      - run: npm test
-      - uses: dorny/paths-filter@v2
-        id: changes
+          ref: ${{ github.ref }}
+      - name: 'cat package.json'
+        run: cat ./services/app/package.json
+      - name: 'Automated Version Bump'
+        id: version-bump
+        uses: 'phips28/gh-action-bump-version@master'
         with:
-          filters: |
-            app:
-              - 'app/**'
-            server:
-              - 'server/**'
-      - uses: JS-DevTools/npm-publish@v3
-        if: steps.changes.outputs.app == 'true'
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: app
-      - uses: JS-DevTools/npm-publish@v3
-        if: steps.changes.outputs.server == 'true'
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: server
+          tag-prefix: 'v'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'cat package.json'
+        run: cat ./services/app/package.json
+      - name: 'Output Step'
+        env:
+          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+        run: echo "new tag $NEW_TAG"
