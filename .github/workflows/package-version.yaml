@@ -18,11 +18,11 @@ on:
 
 jobs:
   main:
-    name: Nx Cloud - Main Job
-    runs-on: ubuntu-latest
-    env:
-      NX_CI_EXECUTION_ENV: "linux"
-    steps:
+     name: Nx Cloud - Main Job
+     runs-on: ubuntu-latest
+    # env:
+    #   NX_CI_EXECUTION_ENV: "linux"
+     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
