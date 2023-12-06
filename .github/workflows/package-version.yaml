@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: nrwl/nx-set-shas@v4
+      # - uses: nrwl/nx-set-shas@v4
 
       - name: Install primary node version (see volta config in package.json) and dependencies
         uses: ./.github/actions/install-node-and-dependencies
