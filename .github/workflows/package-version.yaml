@@ -41,7 +41,7 @@ jobs:
           # Use a script or a tool to bump the versions of the changed packages
           # For example, you can use standard-version (https://github.com/conventional-changelog/standard-version)
           # Loop through the list of changed packages and run standard-version for each one
-          IFS=',' read -ra PACKAGES <<< "${{ steps.changes.outputs.packages }}"
+          IFS=',' read -ra PACKAGES <<< "${{ steps.changes.outputs.services }}"
           for PACKAGE in "${PACKAGES[@]}"; do
             cd $PACKAGE
             npx standard-version
