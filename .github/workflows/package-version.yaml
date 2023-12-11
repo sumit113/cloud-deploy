@@ -1,62 +1,78 @@
-name: Publish npm packages
-
-on:
+name: Bump versions
+on: 
   push:
     branches:
       - main 
-
 jobs:
-  publish:
+  bump:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Get changed files
+      - name: Check out repository code
         id: changed_files
-        uses: dorny/paths-filter@v2
-        with:
-          filters: |
-            app:
-              - './services/app/**'
-            server:
-              - './services/server/**'
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
-          registry-url: 'https://registry.npmjs.org'
-          
-      - uses: actions/cache@v3
-        with:
-         # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
-          path: |
-            ~/.npm
-            ${{ github.workspace }}/.next/cache
-        # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-        # If source files changed but packages didn't, rebuild from a prior cache.
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-      - name: Publish app package
+        uses: actions/checkout@v2
+      - name: Bump package versions
         if: steps.changed_files.outputs.app == 'true'
-        working-directory: ./services/app/
+        run: npx bump-package-versions --part=patch --strategy=highest ./package.json ./services/app/package.json ./services/server/package.json
+      - name: Commit and push changes
         run: |
-          npm install
-          npm run build
-          npm-version-bump --bump patch
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          git config --global user.name 'sumit113'
+          git config --global user.email 'sumit.lal007@gmail.com'
+          git add .
+          git commit -m "Bump package versions"
+          git push
 
-      - name: Publish server package
-        if: steps.changed_files.outputs.server == 'true'
-        working-directory: server
-        run: |
-          npm install
-          npm run build
-          npm-version-bump --bump patch
-          npm publish
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+# jobs:
+#   publish:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       - name: Get changed files
+#         id: changed_files
+#         uses: dorny/paths-filter@v2
+#         with:
+#           filters: |
+#             app:
+#               - './services/app/**'
+#             server:
+#               - './services/server/**'
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: '14.x'
+#           registry-url: 'https://registry.npmjs.org'
+          
+#       - uses: actions/cache@v3
+#         with:
+#          # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
+#           path: |
+#             ~/.npm
+#             ${{ github.workspace }}/.next/cache
+#         # Generate a new cache whenever packages or source files change.
+#           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+#         # If source files changed but packages didn't, rebuild from a prior cache.
+#           restore-keys: |
+#             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+#       - name: Publish app package
+#         if: steps.changed_files.outputs.app == 'true'
+#         working-directory: ./services/app/
+#         run: |
+#           npm install
+#           npm run build
+#           npm-version-bump --bump patch
+#           npm publish
+#         env:
+#           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+#       - name: Publish server package
+#         if: steps.changed_files.outputs.server == 'true'
+#         working-directory: server
+#         run: |
+#           npm install
+#           npm run build
+#           npm-version-bump --bump patch
+#           npm publish
+#         env:
+#           NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
