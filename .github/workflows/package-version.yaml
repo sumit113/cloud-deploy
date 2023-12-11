@@ -1,31 +1,29 @@
-name: package version update
-
 on:
   push:
     branches:
       - main
 
 jobs:
-  build:
+  install:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 10
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
+      # - name: Cancel Previous Runs
+      #   uses: styfle/cancel-workflow-action@0.11.0
+      #   with:
+      #     access_token: ${{ github.token }}
 
-    - name: 'Automated Version Bump'
-      uses: 'qubetools/qubetools-gh-action-semantic-version-tag-bump@v1.0.0'
-      id: version-bump
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        major-wording: 'major,Major,breaking,Breaking'
-        minor-wording: 'minor,Minor,new,New,feat,Feat,feature,Feature,release,Release'
-        patch-wording: 'fix,Fix,fixes,Fixes,patch,Patch'
-        rc-wording: 'rc,pre'
-        hours-to-go-back: 24
-        skip-if-no-commits: 'true'
-        tag-prefix: 'v'
-        commit-message: 'CI: bumps version to {{version}} [skip ci]'
-        bump-policy: 'last-commit'
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: Bump package version
+        id: bumping-version
+        uses: jpb06/bump-package@latest
+        with:
+          major-keywords: BREAKING CHANGE
+          minor-keywords: feat,minor
+          patch-keywords: fix,chore
+          should-default-to-patch: true
