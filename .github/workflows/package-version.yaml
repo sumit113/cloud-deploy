@@ -1,38 +1,51 @@
-name: bump version branches
+name: Publish npm packages
 
 on:
   push:
     branches:
-      - main
+      - main 
 
 jobs:
-  build:
-    # if: github.event.pull_request.merged == true
+  publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: 'Automated Version Bump'
-      uses: 'qubetools/qubetools-gh-action-semantic-version-tag-bump@v1.0.0'
-      id: version-bump
-      with:
+      - name: Get changed files
+        id: changed_files
+        uses: dorny/paths-filter@v2
+        with:
           filters: |
             app:
-              - 'services/app/**'
+              - './services/app/**'
             server:
-              - 'services/server/**'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-        major-wording: 'major,Major,breaking,Breaking'
-        minor-wording: 'minor,Minor,new,New,feat,Feat,feature,Feature,release,Release'
-        patch-wording: 'fix,Fix,fixes,Fixes,patch,Patch'
-        rc-wording: 'rc,pre'
-        hours-to-go-back: 24
-        skip-if-no-commits: 'true'
-        tag-prefix: 'v'
-        commit-message: 'CI: bumps version to {{version}} [skip ci]'
-        bump-policy: 'last-commit'
+              - './services/server/**'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish app package
+        if: steps.changed_files.outputs.app == 'true'
+        working-directory: ./services/app/
+        run: |
+          npm install
+          npm run build
+          npm-version-bump --bump patch
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish server package
+        if: steps.changed_files.outputs.server == 'true'
+        working-directory: server
+        run: |
+          npm install
+          npm run build
+          npm-version-bump --bump patch
+          npm publish
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
