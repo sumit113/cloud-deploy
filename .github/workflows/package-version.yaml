@@ -21,7 +21,7 @@ jobs:
               - 'services/server'
       - name: 'Automated Version Bump'
         if: steps.changes.outputs.app == 'true'
-        uses:  'phips28/gh-action-bump-version@master'
+        uses: 'phips28/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGEJSON_DIR:  './services/app'
