@@ -17,7 +17,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm install
       - run: npm run build
-      - uses: npm-publish@v1
+      - uses: action/npm-publish@v1
         with:
           package: './services/app/package.json'
           access: 'public'
