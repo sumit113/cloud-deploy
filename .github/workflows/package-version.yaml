@@ -1,41 +1,22 @@
-name: Publish React package to NPM
+name: Bump version
 on:
   push:
     branches:
       - main
 jobs:
-  publish:
+  bump-version:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
-        id: changes
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Automated Version Bump
+        uses: phips28/gh-action-bump-version@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-           filters: |
-             app:
-               - 'services/app' 
-             server:  
-              - 'services/server'
-      - name: 'Automated Version Bump'
-        # if: steps.changes.outputs.app == 'true'
-        uses: 'phips28/gh-action-bump-version@master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGEJSON_DIR: './services/app'
-
-      - name: Publish server
-        # if: steps.changes.outputs.server == 'true'
-        uses: 'phips28/gh-action-bump-version@master' 
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGEJSON_DIR: './services/server'
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.name 'sumit113'
-          git config --global user.email 'sumit.lal007@gmail.com'
-          git commit -m "Bump app version"
-          git push
+          # specify the folder where package.json is located
+          folder: ./services/app
+          # specify the wording for minor version bump
+          minor-wording: 'feat,minor'
+          # specify the wording for major version bump
+          major-wording: 'BREAKING,major'
