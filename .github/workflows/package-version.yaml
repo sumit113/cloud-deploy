@@ -20,7 +20,7 @@ jobs:
              server:  
               - 'services/server'
       - name: 'Automated Version Bump'
-        if: steps.changes.outputs.app == 'true'
+        # if: steps.changes.outputs.app == 'true'
         uses:  'phips28/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
