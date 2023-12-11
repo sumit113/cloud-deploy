@@ -1,36 +1,66 @@
-name: Publish packages
+# This workflow will publish changed packages in a monorepo
+name: Publish Packages
+
+# Trigger the workflow on push or pull request to the main branch
 on:
   push:
-    branches: 
-       - main
-    paths:
-      - 'services/app/**'
-      - 'services/server/**'  
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# A job to publish the packages
 jobs:
   publish:
+    # Run this job on Ubuntu
     runs-on: ubuntu-latest
+
+    # Steps of the job
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      # Check out the repository
+      - uses: actions/checkout@v2
+
+      # Install Node.js
+      - uses: actions/setup-node@v2
         with:
-          node-version: "20"
+          node-version: '14'
+
+      # Install dependencies
       - run: npm install
+
+      # Run tests
       - run: npm test
-      - uses: dorny/paths-filter@v2
+
+      # Detect changed packages
+      - name: Detect changed packages
         id: changes
-        with:
-          filters: |
-            app:
-              - 'services/app/**'
-            server:
-              - 'services/server/**'
-      - uses: JS-DevTools/npm-publish@v3
-        if: steps.changes.outputs.app == 'true'
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: services/app/package.json
-      - uses: JS-DevTools/npm-publish@v3
-        if: steps.changes.outputs.server == 'true'
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: services/server/package.json
+        run: |
+          # Use a script or a tool to detect the changed packages
+          # For example, you can use Lerna (https://github.com/lerna/lerna)
+          # Store the list of changed packages as a comma-separated string in an output variable
+          echo "::set-output name=packages::package1,package2"
+
+      # Bump versions of changed packages
+      - name: Bump versions
+        run: |
+          # Use a script or a tool to bump the versions of the changed packages
+          # For example, you can use standard-version (https://github.com/conventional-changelog/standard-version)
+          # Loop through the list of changed packages and run standard-version for each one
+          IFS=',' read -ra PACKAGES <<< "${{ steps.changes.outputs.packages }}"
+          for PACKAGE in "${PACKAGES[@]}"; do
+            cd $PACKAGE
+            npx standard-version
+            cd ..
+          done
+
+      # Publish changed packages
+      - name: Publish packages
+        run: |
+          # Use a script or a tool to publish the changed packages
+          # For example, you can use npm publish (https://docs.npmjs.com/cli/v7/commands/npm-publish)
+          # Loop through the list of changed packages and run npm publish for each one
+          IFS=',' read -ra PACKAGES <<< "${{ steps.changes.outputs.packages }}"
+          for PACKAGE in "${PACKAGES[@]}"; do
+            cd $PACKAGE
+            npm publish
+            cd ..
+          done
