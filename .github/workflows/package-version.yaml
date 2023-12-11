@@ -20,11 +20,18 @@ jobs:
              server:  
               - 'services/server'
       - name: 'Automated Version Bump'
-        # if: steps.changes.outputs.app == 'true'
+        if: steps.changes.outputs.app == 'true'
         uses:  'phips28/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGEJSON_DIR:  './services/app''./services/server'
+          PACKAGEJSON_DIR:  './services/app'
+
+      - name: Publish server
+        if: steps.changes.outputs.server == 'true'
+        uses: 'phips28/gh-action-bump-version@master' 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGEJSON_DIR:  './services/server'
 
       - name: Commit and push changes
         run: |
