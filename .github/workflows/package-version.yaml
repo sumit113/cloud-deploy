@@ -31,4 +31,4 @@ jobs:
           git config --global user.name 'sumit113'
           git config --global user.email 'sumit.lal007@gmail.com'
           git commit -m "Bump app version"
-          git push  
+          git push
