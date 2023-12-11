@@ -25,16 +25,6 @@ jobs:
           CHANGED_PACKAGES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^package.*/' || true)
           echo "Changed packages: $CHANGED_PACKAGES"
           echo "::set-output name=changed_packages::$CHANGED_PACKAGES"
-      # Install Node.js
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      # Install dependencies
-      # - run: npm install
-
-      # Run tests
-      # - run: npm test
 
       # Detect changed packages
       - name: Detect changed packages
@@ -43,7 +33,7 @@ jobs:
           # Use a script or a tool to detect the changed packages
           # For example, you can use Lerna (https://github.com/lerna/lerna)
           # Store the list of changed packages as a comma-separated string in an output variable
-          echo "::set-output name=packages::./services/app/package.json,"
+          echo "::set-output name=services::app,server"
 
       # Bump versions of changed packages
       - name: Bump versions
