@@ -1,42 +1,49 @@
-# .github/workflows/release.yml:
-name: Release
-
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      bump:
-        description: 'bump type, major or minor or patch or empty string'
-        default: ''
-      dry_run:
-        description: 'dry run, true or false'
-        default: 'false'
-      draft:
-        description: 'draft, true or false'
-        default: 'false'
-      pre_release:
-        description: 'pre release, true or false'
-        default: 'false'
 
 jobs:
-  release:
+  install:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v2
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
         with:
+          access_token: ${{ github.token }}
+
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
-      - uses: actions/setup-node@v1
+
+      - uses: pnpm/action-setup@v2.2.4
         with:
-          node-version: 12
-      - run: npm install
-      - run: npm run build
-      - run: npm run test
-      - uses: MeilCli/bump-release-action@v1
+          version: latest
+
+      - name: Setup node
+        uses: actions/setup-node@v3
         with:
-          config_path: '.github/bump.yml'
-          bump: ${{ github.event.inputs.bump }}
-          dry_run: ${{ github.event.inputs.dry_run }}
-          draft: ${{ github.event.inputs.draft }}
-          pre_release: ${{ github.event.inputs.pre_release }}
+          node-version-file: '.node-version'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
+
+      - name: Installing dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Tests
+        run: pnpm test-ci
+
+      - name: Generating coverage badges
+        uses: jpb06/jest-badges-action@latest
+
+      - name: Bump package version
+        id: bumping-version
+        uses: jpb06/bump-package@latest
+        with:
+          major-keywords: BREAKING CHANGE
+          minor-keywords: feat,minor
+          patch-keywords: fix,chore
+          should-default-to-patch: true
