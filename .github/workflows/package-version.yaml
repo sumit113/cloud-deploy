@@ -11,7 +11,16 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+           filters: |
+             app:
+               - 'services/app' 
+             server:  
+              - 'services/server'
       - name: 'Automated Version Bump'
+        if: steps.changes.outputs.app == 'true'
         uses:  'phips28/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
