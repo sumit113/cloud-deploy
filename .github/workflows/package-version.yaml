@@ -18,7 +18,13 @@ jobs:
     steps:
       # Check out the repository
       - uses: actions/checkout@v2
-
+      
+      - name: Identify Changed Packages
+        id: identify-changes
+        run: |
+          CHANGED_PACKAGES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^package.*/' || true)
+          echo "Changed packages: $CHANGED_PACKAGES"
+          echo "::set-output name=changed_packages::$CHANGED_PACKAGES"
       # Install Node.js
       - uses: actions/setup-node@v2
         with:
