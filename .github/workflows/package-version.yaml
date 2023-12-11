@@ -1,22 +1,36 @@
-name: Bump version
+name: Publish packages
 on:
   push:
-    branches:
-      - main
+    branches: 
+       - main
+    paths:
+      - 'services/app/**'
+      - 'services/server/**'  
 jobs:
-  bump-version:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Automated Version Bump
-        uses: phips28/gh-action-bump-version@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          # specify the folder where package.json is located
-          folder: ./services/app
-          # specify the wording for minor version bump
-          minor-wording: 'feat,minor'
-          # specify the wording for major version bump
-          major-wording: 'BREAKING,major'
+          node-version: "20"
+      - run: npm install
+      - run: npm test
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            app:
+              - 'services/app/**'
+            server:
+              - 'services/server/**'
+      - uses: JS-DevTools/npm-publish@v3
+        if: steps.changes.outputs.app == 'true'
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: services/app/package.json
+      - uses: JS-DevTools/npm-publish@v3
+        if: steps.changes.outputs.server == 'true'
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: services/server/package.json
