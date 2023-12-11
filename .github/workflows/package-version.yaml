@@ -1,29 +1,36 @@
+name: Publish packages
 on:
   push:
-    branches:
-      - main
-
+    branches: 
+       - main
+    paths:
+      - 'services/app/**'
+      - 'services/server/**'  
 jobs:
-  install:
+  publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      # - name: Cancel Previous Runs
-      #   uses: styfle/cancel-workflow-action@0.11.0
-      #   with:
-      #     access_token: ${{ github.token }}
-
-      - name: Check out repository code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-
-      - name: Bump package version
-        id: bumping-version
-        uses: jpb06/bump-package@latest
+          node-version: "20"
+      # - run: npm install
+      # - run: npm test
+      - uses: dorny/paths-filter@v2
+        id: changes
         with:
-          major-keywords: BREAKING CHANGE
-          minor-keywords: feat,minor
-          patch-keywords: fix,chore
-          should-default-to-patch: true
+          filters: |
+            app:
+              - 'services/app/**'
+            server:
+              - 'services/server/**'
+      - uses: JS-DevTools/npm-publish@v3
+        if: steps.changes.outputs.app == 'true'
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: services/app/package.json
+      - uses: JS-DevTools/npm-publish@v3
+        if: steps.changes.outputs.server == 'true'
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: services/server/package.json
