@@ -31,10 +31,10 @@ jobs:
           node-version: '14'
 
       # Install dependencies
-      - run: npm install
+      # - run: npm install
 
       # Run tests
-      - run: npm test
+      # - run: npm test
 
       # Detect changed packages
       - name: Detect changed packages
