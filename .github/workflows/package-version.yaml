@@ -22,17 +22,17 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v2
-    - name: Automated Version Bump
-      uses: phips28/gh-action-bump-version@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          # specify the folder where package.json is located
-          folder: package1
-          # specify the wording for minor version bump
-          minor-wording: 'feat,minor'
-          # specify the wording for major version bump
-          major-wording: 'BREAKING,major'  
+    # - name: Automated Version Bump
+    #   uses: phips28/gh-action-bump-version@master
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #       # specify the folder where package.json is located
+    #       folder: package1
+    #       # specify the wording for minor version bump
+    #       minor-wording: 'feat,minor'
+    #       # specify the wording for major version bump
+    #       major-wording: 'BREAKING,major'  
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
