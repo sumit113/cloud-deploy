@@ -1,62 +1,39 @@
-# This workflow will publish changed packages in a monorepo
-name: Publish Packages
+# .github/workflows/release.yml:
+name: Release
 
-# Trigger the workflow on push or pull request to the main branch
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'bump type, major or minor or patch or empty string'
+        default: ''
+      dry_run:
+        description: 'dry run, true or false'
+        default: 'false'
+      draft:
+        description: 'draft, true or false'
+        default: 'false'
+      pre_release:
+        description: 'pre release, true or false'
+        default: 'false'
 
-# A job to publish the packages
 jobs:
-  publish:
-    # Run this job on Ubuntu
+  release:
     runs-on: ubuntu-latest
-
-    # Steps of the job
     steps:
-      # Check out the repository
       - uses: actions/checkout@v2
-      
-      - name: Identify Changed Packages
-        id: identify-changes
-        run: |
-          CHANGED_PACKAGES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^package.*/' || true)
-          echo "Changed packages: $CHANGED_PACKAGES"
-          echo "::set-output name=changed_packages::$CHANGED_PACKAGES"
-
-      # Detect changed packages
-      - name: Detect changed packages
-        id: changes
-        run: |
-          # Use a script or a tool to detect the changed packages
-          # For example, you can use Lerna (https://github.com/lerna/lerna)
-          # Store the list of changed packages as a comma-separated string in an output variable
-          echo "::set-output name=services::app,server"
-
-      # Bump versions of changed packages
-      - name: Bump versions
-        run: |
-          # Use a script or a tool to bump the versions of the changed packages
-          # For example, you can use standard-version (https://github.com/conventional-changelog/standard-version)
-          # Loop through the list of changed packages and run standard-version for each one
-          IFS=',' read -ra PACKAGES <<< "${{ steps.changes.outputs.services }}"
-          for PACKAGE in "${PACKAGES[@]}"; do
-            cd $PACKAGE
-            npx standard-version
-            cd ..
-          done
-
-      # Publish changed packages
-      - name: Publish packages
-        run: |
-          # Use a script or a tool to publish the changed packages
-          # For example, you can use npm publish (https://docs.npmjs.com/cli/v7/commands/npm-publish)
-          # Loop through the list of changed packages and run npm publish for each one
-          IFS=',' read -ra PACKAGES <<< "${{ steps.changes.outputs.packages }}"
-          for PACKAGE in "${PACKAGES[@]}"; do
-            cd $PACKAGE
-            npm publish
-            cd ..
-          done
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm run build
+      - run: npm run test
+      - uses: MeilCli/bump-release-action@v1
+        with:
+          config_path: '.github/bump.yml'
+          bump: ${{ github.event.inputs.bump }}
+          dry_run: ${{ github.event.inputs.dry_run }}
+          draft: ${{ github.event.inputs.draft }}
+          pre_release: ${{ github.event.inputs.pre_release }}
