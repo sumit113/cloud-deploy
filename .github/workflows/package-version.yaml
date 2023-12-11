@@ -43,7 +43,7 @@ jobs:
           # Use a script or a tool to detect the changed packages
           # For example, you can use Lerna (https://github.com/lerna/lerna)
           # Store the list of changed packages as a comma-separated string in an output variable
-          echo "::set-output name=packages::app,server"
+          echo "::set-output name=packages::./services/app/*,"
 
       # Bump versions of changed packages
       - name: Bump versions
