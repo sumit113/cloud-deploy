@@ -10,18 +10,6 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: 'Automated Version Bump'
-        if: steps.changes.outputs.app == 'true'
-        uses:  'phips28/gh-action-bump-version@master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGEJSON_DIR:  './services/app'
-      - name: Commit and push changes
-        run: |
-          git config --global user.name 'sumit113'
-          git config --global user.email 'sumit.lal007@gmail.com'
-          git commit -m "Bump app version"
-          git push
       - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v2
         id: changes
@@ -31,16 +19,16 @@ jobs:
                - 'services/app' 
              server:  
               - 'services/server'
-      # - name: 'Automated Version Bump'
-      #   # if: steps.changes.outputs.app == 'true'
-      #   uses:  'phips28/gh-action-bump-version@master'
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     PACKAGEJSON_DIR:  './services/app'
+      - name: 'Automated Version Bump'
+        # if: steps.changes.outputs.app == 'true'
+        uses:  'phips28/gh-action-bump-version@master'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGEJSON_DIR:  './services/app''./services/server'
 
-      # - name: Commit and push changes
-      #   run: |
-      #     git config --global user.name 'sumit113'
-      #     git config --global user.email 'sumit.lal007@gmail.com'
-      #     git commit -m "Bump app version"
-      #     git push
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'sumit113'
+          git config --global user.email 'sumit.lal007@gmail.com'
+          git commit -m "Bump app version"
+          git push
